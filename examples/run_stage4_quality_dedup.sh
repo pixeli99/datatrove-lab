@@ -13,9 +13,13 @@
 # Run from a login node for the full corpus:
 #   OVERWRITE=1 bash examples/run_stage4_quality_dedup.sh
 #
-# Smoke test on a single CC dump first (recommended before full submission):
+# Smoke test on a single CC dump first (recommended before full submission).
+# WORK_ROOT and OUTPUT_ROOT must live on shared storage (lustre/work) because
+# the three stages run on different compute nodes — never use /tmp:
+#   DATATROVE_ROOT=/lustre/projects/polyullm/lipengxiang_tmp/datatrove-lab \
 #   INPUT_ROOT=/work/projects/polyullm/lipengxiang_tmp/fineweb_012/CC-MAIN-2013-20 \
-#   OUTPUT_ROOT=/tmp/dedup_test_out WORK_ROOT=/tmp/dedup_test_work \
+#   OUTPUT_ROOT=/work/projects/polyullm/lipengxiang_tmp/dedup_smoke_out \
+#   WORK_ROOT=/work/projects/polyullm/lipengxiang_tmp/dedup_smoke_work \
 #   LOG_ROOT=logs/stage4_smoke \
 #   TASKS=64 FINDER_WORKERS=16 \
 #   SIGNATURE_CONCURRENCY=32 FILTER_CONCURRENCY=32 FINDER_CONCURRENCY=8 \
