@@ -36,7 +36,7 @@ LOG_ROOT="${LOG_ROOT:-logs/stage4_global_dedup}"
 WORKER_SCRIPT="${WORKER_SCRIPT:-${DATATROVE_ROOT}/examples/stage4_quality_dedup_worker.sh}"
 PATHS_FILE="${PATHS_FILE:-${WORK_ROOT}/input_paths.txt}"
 
-IMAGE="${IMAGE:-/lustre/projects/polyullm/container/lmsysorg-sglang+v0.5.6.sqsh}"
+IMAGE="${IMAGE:-/lustre/projects/polyullm/pretrain/container/datatrove.sqsh}"
 MOUNTS="${MOUNTS:-/work/projects/polyullm:/work/projects/polyullm,/lustre/projects/polyullm:/lustre/projects/polyullm}"
 HOME_DIR="${HOME_DIR:-/work/projects/polyullm/lipengxiang}"
 

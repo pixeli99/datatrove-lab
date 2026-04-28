@@ -12,7 +12,7 @@ WORK_ROOT="${WORK_ROOT:-/work/projects/polyullm/lipengxiang_tmp/fineweb_012_dedu
 PATHS_FILE="${PATHS_FILE:-${WORK_ROOT}/input_paths.txt}"
 PY_SCRIPT="${PY_SCRIPT:-${DATATROVE_ROOT}/examples/stage4_quality_exact_dedup.py}"
 
-IMAGE="${IMAGE:-/lustre/projects/polyullm/container/lmsysorg-sglang+v0.5.6.sqsh}"
+IMAGE="${IMAGE:-/lustre/projects/polyullm/pretrain/container/datatrove.sqsh}"
 MOUNTS="${MOUNTS:-/work/projects/polyullm:/work/projects/polyullm,/lustre/projects/polyullm:/lustre/projects/polyullm}"
 HOME_DIR="${HOME_DIR:-/work/projects/polyullm/lipengxiang}"
 TASKS="${TASKS:-4096}"
