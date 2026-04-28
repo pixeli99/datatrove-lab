@@ -16,6 +16,11 @@ IMAGE="${IMAGE:-/lustre/projects/polyullm/pretrain/container/datatrove.sqsh}"
 MOUNTS="${MOUNTS:-/work/projects/polyullm:/work/projects/polyullm,/lustre/projects/polyullm:/lustre/projects/polyullm}"
 HOME_DIR="${HOME_DIR:-/work/projects/polyullm/lipengxiang}"
 VENV_ACTIVATE="${VENV_ACTIVATE:-/root/env/bin/activate}"
+# Reuse one named pyxis container per node — pyxis attaches to it instead
+# of unpacking the sqsh on every task. After the first sbatch primes the
+# cache, subsequent runs start almost instantly. Override CONTAINER_NAME
+# to fall back to per-task containers if you ever need a clean rootfs.
+CONTAINER_NAME="${CONTAINER_NAME:-datatrove_lab}"
 TASKS="${TASKS:-4096}"
 FINDER_WORKERS="${FINDER_WORKERS:-256}"
 HASH_FC="${HASH_FC:-xxhash}"
@@ -34,10 +39,9 @@ echo "[WORKER] work=${WORK_ROOT}"
 echo "[WORKER] paths_file=${PATHS_FILE}"
 
 srun --nodes=1 --ntasks=1 \
-  --container-name=datatrove_s4_${STAGE}_${SLURM_JOB_ID}_${RANK} \
+  --container-name="${CONTAINER_NAME}" \
   --container-image="${IMAGE}" \
   --container-mounts="${MOUNTS}" \
-  --container-writable \
   bash -lc "
     set -euo pipefail
     if [ -f '${VENV_ACTIVATE}' ]; then
