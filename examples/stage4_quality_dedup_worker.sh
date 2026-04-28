@@ -16,11 +16,6 @@ IMAGE="${IMAGE:-/lustre/projects/polyullm/pretrain/container/datatrove.sqsh}"
 MOUNTS="${MOUNTS:-/work/projects/polyullm:/work/projects/polyullm,/lustre/projects/polyullm:/lustre/projects/polyullm}"
 HOME_DIR="${HOME_DIR:-/work/projects/polyullm/lipengxiang}"
 VENV_ACTIVATE="${VENV_ACTIVATE:-/root/env/bin/activate}"
-# Reuse one named pyxis container per node — pyxis attaches to it instead
-# of unpacking the sqsh on every task. After the first sbatch primes the
-# cache, subsequent runs start almost instantly. Override CONTAINER_NAME
-# to fall back to per-task containers if you ever need a clean rootfs.
-CONTAINER_NAME="${CONTAINER_NAME:-datatrove_lab}"
 TASKS="${TASKS:-4096}"
 FINDER_WORKERS="${FINDER_WORKERS:-256}"
 HASH_FC="${HASH_FC:-xxhash}"
@@ -32,6 +27,13 @@ else
   WORLD_SIZE="${TASKS}"
 fi
 
+# Unique container name per task. A shared name (e.g. datatrove_lab) is
+# tempting for cache reuse, but this cluster's pyxis does not arbitrate
+# concurrent creation of the same named container — sibling tasks racing
+# on first launch crash with "File exists". Override CONTAINER_NAME if
+# the cluster grows pyxis support for shared named containers.
+CONTAINER_NAME="${CONTAINER_NAME:-datatrove_s4_${STAGE}_${SLURM_JOB_ID:-0}_${RANK}}"
+
 echo "[WORKER] stage=${STAGE} rank=${RANK}/${WORLD_SIZE}"
 echo "[WORKER] input=${INPUT_ROOT}"
 echo "[WORKER] output=${OUTPUT_ROOT}"
@@ -42,6 +44,7 @@ srun --nodes=1 --ntasks=1 \
   --container-name="${CONTAINER_NAME}" \
   --container-image="${IMAGE}" \
   --container-mounts="${MOUNTS}" \
+  --container-writable \
   bash -lc "
     set -euo pipefail
     if [ -f '${VENV_ACTIVATE}' ]; then
