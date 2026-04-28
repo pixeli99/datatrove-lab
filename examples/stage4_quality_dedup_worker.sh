@@ -15,6 +15,7 @@ PY_SCRIPT="${PY_SCRIPT:-${DATATROVE_ROOT}/examples/stage4_quality_exact_dedup.py
 IMAGE="${IMAGE:-/lustre/projects/polyullm/pretrain/container/datatrove.sqsh}"
 MOUNTS="${MOUNTS:-/work/projects/polyullm:/work/projects/polyullm,/lustre/projects/polyullm:/lustre/projects/polyullm}"
 HOME_DIR="${HOME_DIR:-/work/projects/polyullm/lipengxiang}"
+VENV_ACTIVATE="${VENV_ACTIVATE:-/root/env/bin/activate}"
 TASKS="${TASKS:-4096}"
 FINDER_WORKERS="${FINDER_WORKERS:-256}"
 HASH_FC="${HASH_FC:-xxhash}"
@@ -39,6 +40,9 @@ srun --nodes=1 --ntasks=1 \
   --container-writable \
   bash -lc "
     set -euo pipefail
+    if [ -f '${VENV_ACTIVATE}' ]; then
+      source '${VENV_ACTIVATE}'
+    fi
     export HOME='${HOME_DIR}'
     export PYTHONPATH='${DATATROVE_ROOT}/src:'\"\${PYTHONPATH:-}\"
     cd '${DATATROVE_ROOT}'
